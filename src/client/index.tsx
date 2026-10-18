@@ -13,7 +13,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 export const name = 'fly-engagement-panel'
 export const inject = ['slots', 'sidebarRightTabs']
 
-const PACKAGE = 'dsh-plugin-fly-engagement'
+const PACKAGE = '@dsh-fly/dsh-plugin-fly-engagement'
 const KIND = 'fly.engagement'
 const TAB_TITLE = 'Engagement'
 const TAB_DESCRIPTION = '目标 / 资产 / 漏洞 / 证据图'
