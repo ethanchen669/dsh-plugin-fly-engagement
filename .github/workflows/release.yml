@@ -37,6 +37,7 @@ jobs:
           if [ "$want" != "$GITHUB_REF_NAME" ]; then echo "tag=$GITHUB_REF_NAME，但 package.json 里是 $want"; exit 1; fi
           echo "tag 与版本一致：$GITHUB_REF_NAME"
       - name: 发布前先跑本仓门禁
+        run: pnpm build:client   # (3) 面板产物必须在发布前真的产出来（lib/client.js 不进 git）
         run: node scripts/verify.mjs
       - name: npm 升到 11（trusted publishing 需要 npm >= 11.5）
         run: |
