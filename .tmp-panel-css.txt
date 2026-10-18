@@ -1,0 +1,124 @@
+/*
+ * fly-engagement 抽屉面板 —— **目标效果图的样式表**（2026-10-18，等用户判方向）
+ *
+ * 这张表就是实现时的对照物：类名 / token / 尺寸都按真面板的约定写（'.fly-eg-*' 前缀，
+ * 与 shell 的 '.fly-*' 一族同形），所以"照图实现"不会漂移成另一套。
+ *
+ * token 纪律：这里因为要**独立渲染**（没有宿主 skin），把深色底值写进 ':root' 兜底；
+ * 实现时一律 'var(--dsw-alias-*, 兜底)' —— 真宿主会给出 token，兜底只在 mock/降级时生效。
+ * 面板框（rail 8px / desk 12px / 3px 亮缘）照 '.fly-panel' 的结构，不再发明第二套。
+ */
+:root {
+  --dsw-alias-bg-base: #070b12;
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.045);
+  --dsw-alias-bg-layer-2: rgba(255, 255, 255, 0.07);
+  --dsw-alias-fg-primary: #e8eef8;
+  --dsw-alias-fg-secondary: #9fb0c6;
+  --dsw-alias-fg-muted: #6b7d95;
+  --dsw-alias-border-l1: rgba(255, 255, 255, 0.10);
+  --fly-accent: #f0a55a;
+  --fly-accent-dim: rgba(240, 165, 90, 0.16);
+  --fly-critical: #ff5f6d;
+  --fly-high: #ff9b52;
+  --fly-medium: #e8c54a;
+  --fly-low: #6fc2ff;
+  --fly-info: #8fa3bd;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: var(--fly-desk, 12px);
+  background: #05080d;
+  font: 13px/1.5 -apple-system, "SF Pro Text", "PingFang SC", system-ui, sans-serif;
+  color: var(--dsw-alias-fg-primary);
+}
+
+/* ── 面板框：照 .fly-panel 的结构（rail 8px / 3px 亮缘 / 底部关系型亮缘） ── */
+.fly-eg-panel {
+  --fly-rail: 8px;
+  width: 760px;
+  border-radius: 12px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  background:
+    radial-gradient(900px 320px at 12% -12%, rgba(240, 165, 90, 0.10), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 42%),
+    var(--dsw-alias-bg-base);
+  padding: var(--fly-rail) calc(var(--fly-rail) + 6px) calc(var(--fly-rail) + 8px);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ── 头部：工作区 + goal + authorization ── */
+.fly-eg-head { display: flex; flex-direction: column; gap: 6px; padding-bottom: 10px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
+.fly-eg-title { display: flex; align-items: baseline; gap: 8px; }
+.fly-eg-title h1 { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
+.fly-eg-badge { font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--fly-accent-dim); color: var(--fly-accent); border: 1px solid rgba(240, 165, 90, 0.35); }
+.fly-eg-meta { font-size: 11.5px; color: var(--dsw-alias-fg-secondary); display: flex; flex-wrap: wrap; gap: 10px; }
+.fly-eg-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; color: var(--dsw-alias-fg-primary); }
+.fly-eg-auth { font-size: 11.5px; color: var(--dsw-alias-fg-muted); }
+.fly-eg-auth b { color: var(--fly-accent); font-weight: 600; }
+
+/* ── 计数读数：counts + dropped/refused/truncated（截断显眼） ── */
+.fly-eg-counters { display: flex; gap: 4px; margin: 8px 0; flex-wrap: wrap; align-items: center; }
+.fly-eg-counter { border: 1px solid var(--dsw-alias-border-l1); background: var(--dsw-alias-bg-layer-1); border-radius: 6px; padding: 2px 6px; font-size: 10.5px; line-height: 1.5; color: var(--dsw-alias-fg-muted); }
+.fly-eg-counter b { margin-left: 3px; font-size: 11px; }
+.fly-eg-counter b { color: var(--dsw-alias-fg-primary); font-weight: 600; margin-left: 5px; }
+.fly-eg-counter.is-warn { border-color: rgba(255, 95, 109, 0.45); background: rgba(255, 95, 109, 0.10); color: #ffb8be; }
+.fly-eg-counter.is-warn b { color: #ffd7da; }
+
+/* ── 表/图 切换（借 dsh-pentest AssetsView 的两模式） ── */
+.fly-eg-tabs { display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); margin-bottom: 10px; }
+.fly-eg-tab { font-size: 11.5px; padding: 3px 10px; border-radius: 6px; color: var(--dsw-alias-fg-secondary); }
+.fly-eg-tab.is-active { background: rgba(240, 165, 90, 0.18); color: var(--fly-accent); }
+
+/* ── 分区标题 ── */
+.fly-eg-section { margin-top: 12px; }
+.fly-eg-section > h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: var(--dsw-alias-fg-secondary); letter-spacing: 0.4px; text-transform: uppercase; }
+
+/* ── 表 ── */
+.fly-eg-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.fly-eg-table th { text-align: left; font-weight: 500; color: var(--dsw-alias-fg-muted); font-size: 11px; padding: 4px 6px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
+.fly-eg-table td { padding: 5px 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); vertical-align: top; }
+.fly-eg-id { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--dsw-alias-fg-muted); }
+.fly-eg-src { font-size: 11px; color: var(--dsw-alias-fg-muted); }
+.fly-eg-src b { color: var(--dsw-alias-fg-secondary); font-weight: 500; }
+.fly-eg-sev { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; display: inline-block; }
+.fly-eg-sev.critical { color: #fff; background: var(--fly-critical); }
+.fly-eg-sev.high { color: #1a0f06; background: var(--fly-high); }
+.fly-eg-sev.medium { color: #1a1506; background: var(--fly-medium); }
+.fly-eg-sev.low { color: #061019; background: var(--fly-low); }
+.fly-eg-sev.info { color: #0b1017; background: var(--fly-info); }
+.fly-eg-steps { margin: 4px 0 0 0; padding-left: 18px; color: var(--dsw-alias-fg-secondary); font-size: 11.5px; }
+.fly-eg-steps code, .fly-eg-cmd { font-family: ui-monospace, Menlo, monospace; font-size: 11px; background: rgba(255, 255, 255, 0.06); padding: 0 4px; border-radius: 4px; }
+
+/* ── 图区：静态分层 + 边胶囊 + 只读（借 xyflow 的形状，不引入拖拽） ── */
+.fly-eg-graph { position: relative; height: 300px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 10px; background: radial-gradient(600px 240px at 50% 0%, rgba(255,255,255,0.035), transparent 70%), var(--dsw-alias-bg-layer-1); overflow: hidden; }
+.fly-eg-graph-hint { position: absolute; left: 8px; bottom: 6px; font-size: 10.5px; color: var(--dsw-alias-fg-muted); }
+.fly-eg-graph-badge { position: absolute; right: 8px; top: 8px; font-size: 10.5px; padding: 2px 7px; border-radius: 999px; border: 1px solid rgba(255, 95, 109, 0.45); background: rgba(255, 95, 109, 0.12); color: #ffb8be; }
+.fly-eg-node { position: absolute; transform: translate(-50%, -50%); border-radius: 8px; border: 1px solid var(--dsw-alias-border-l1); background: var(--dsw-alias-bg-layer-2); padding: 5px 9px; font-size: 11.5px; white-space: nowrap; }
+.fly-eg-node.is-finding { border-color: rgba(255, 155, 82, 0.55); background: rgba(255, 155, 82, 0.14); color: #ffd7b0; }
+.fly-eg-node.is-asset { border-color: rgba(111, 194, 255, 0.45); background: rgba(111, 194, 255, 0.12); color: #cbe8ff; }
+.fly-eg-edge { position: absolute; height: 1.5px; background: rgba(240, 165, 90, 0.55); transform-origin: 0 50%; }
+.fly-eg-edge-cap { position: absolute; font-size: 10px; color: var(--fly-accent); background: rgba(7, 11, 18, 0.85); padding: 0 4px; border-radius: 4px; border: 1px solid rgba(240, 165, 90, 0.3); }
+
+/* ── 报告区 ── */
+.fly-eg-report { border: 1px solid var(--dsw-alias-border-l1); border-radius: 10px; background: var(--dsw-alias-bg-layer-1); padding: 8px 10px; font-size: 11.5px; color: var(--dsw-alias-fg-secondary); }
+.fly-eg-report-actions { display: flex; gap: 6px; margin-top: 8px; }
+.fly-eg-btn { font-size: 11.5px; padding: 3px 10px; border-radius: 7px; border: 1px solid var(--dsw-alias-border-l1); background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-fg-primary); }
+
+/* 图区的线走 SVG（按节点实测中心算），不用手摆坐标 —— 实现时同样按数据算 */
+.fly-eg-wires { position: absolute; inset: 0; pointer-events: none; }
+
+/* 连线走**折线**（elbow）：横向只占层间那一段，纵向在间隙里走 —— 比直线省横向空间。
+   实现时同样用 SVG path（M/H/V 折角 + stroke-linejoin:round）。 */
+.fly-eg-wire { fill: none; stroke: rgba(240, 165, 90, 0.55); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+
+/* ── 事实按来源工具折叠（<details>，缺省收起：长会话省地方） ── */
+.fly-eg-group { border: 1px solid var(--dsw-alias-border-l1); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); margin-bottom: 4px; }
+.fly-eg-group > summary { cursor: default; list-style: none; padding: 4px 8px; font-size: 11.5px; color: var(--dsw-alias-fg-secondary); display: flex; align-items: center; gap: 6px; }
+.fly-eg-group > summary::-webkit-details-marker { display: none; }
+.fly-eg-group > summary::before { content: '▸'; color: var(--dsw-alias-fg-muted); font-size: 10px; }
+.fly-eg-group[open] > summary::before { content: '▾'; }
+.fly-eg-group > summary b { color: var(--dsw-alias-fg-primary); font-weight: 600; }
+.fly-eg-group > summary .fly-eg-count { margin-left: auto; font-size: 10.5px; color: var(--dsw-alias-fg-muted); }
+.fly-eg-group table { margin: 0 0 2px; }

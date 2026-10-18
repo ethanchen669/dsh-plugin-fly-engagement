@@ -45,11 +45,19 @@
   "scripts": {
     "verify": "node scripts/verify.mjs",
     "test": "node --test tests/*.spec.mjs",
-    "build:client": "node ../../scripts/build-plugin-client.mjs"
+    "build:client": "node scripts/build-client.mjs"
   },
   "description": "DSH Fly engagement 记录面：eng_record/eng_state/eng_report + 抽屉面板（工作区 JSONL + 投影）",
   "homepage": "https://github.com/ethanchen669/dsh-plugin-fly-engagement#readme",
   "bugs": {
     "url": "https://github.com/ethanchen669/dsh-plugin-fly-engagement/issues"
+  },
+  "devDependencies": {
+    "vite": "^5.4.21"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
