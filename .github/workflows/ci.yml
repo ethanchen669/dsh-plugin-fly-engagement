@@ -1,0 +1,34 @@
+# 本仓 CI：**要装依赖**（测试 import 入口，入口 import 引擎 peer `@deepseek-ai/*`），
+# 装的是 devDependencies；`.npmrc` 已把 registry 钉到公开 npm（本机默认是内网镜像）。
+# 署名检查用工作区共享件 `scripts/check-commit-identity.mjs`（与 dsh-fly 逐字节相同，
+# plugin-lock.spec.mjs 会断这件事），**在装依赖之前**跑 —— 身份脏了就不必再装。
+name: ci
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 默认 depth=1 ⇒ 全历史署名检查只看得到一笔 —— 那是把尺子遮住了
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - name: 全历史署名检查（内网身份一律拦下）
+        run: node scripts/check-commit-identity.mjs --all
+      - name: 装依赖（引擎 peer 走 devDependencies；lock 在仓里）
+        run: pnpm install --frozen-lockfile
+      - run: node scripts/verify.mjs

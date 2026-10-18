@@ -1,0 +1,2 @@
+minimumReleaseAgeExclude:
+  - '@dsh-fly/fly-panel-style@0.1.0'

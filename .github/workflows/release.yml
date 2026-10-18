@@ -1,0 +1,46 @@
+# 发布：打 tag（v*）时用 OIDC + provenance 发到公开 npm（不需要 token、不需要 2FA）。
+# 前提：npm 上这个包的 Settings → Trusted Publisher 配好（workflow filename 只写 release.yml，
+# 且要勾 Allow npm publish —— 不勾只会“暂存”，步骤全绿但什么都没发）。
+# 顺序都踩过坑：npm 必须 >= 11.5（Node 22 自带的 10.x 不够）；tag 与 package.json 版本先对一遍，
+# 否则 tag 指错提交就会发错版本。
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - name: 全历史署名检查（内网身份一律拦下，硬门：脏了就不发）
+        run: node scripts/check-commit-identity.mjs --all
+      - name: 装依赖（跑本仓门禁要用）
+        run: pnpm install --frozen-lockfile
+      - name: tag 与 package.json 版本必须一致（tag 指错提交 = 发错版本）
+        run: |
+          want="v$(node -p "require('./package.json').version")"
+          if [ "$want" != "$GITHUB_REF_NAME" ]; then echo "tag=$GITHUB_REF_NAME，但 package.json 里是 $want"; exit 1; fi
+          echo "tag 与版本一致：$GITHUB_REF_NAME"
+      - name: 发布前先跑本仓门禁
+        run: node scripts/verify.mjs
+      - name: npm 升到 11（trusted publishing 需要 npm >= 11.5）
+        run: |
+          npm install -g npm@11
+          npm --version
+      - name: 发布到公开 npm（OIDC + provenance）
+        run: npm publish --access public --provenance

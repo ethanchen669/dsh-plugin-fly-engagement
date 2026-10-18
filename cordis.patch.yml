@@ -1,0 +1,11 @@
+# dsh-plugin-fly-engagement 的**宿主层**声明：只有工作台那一页（路径规划 §11.3b）。
+#
+# **行名必须是裸包名**：`dsh-client-modules` 的 `exactPackageSpecifier()` 对带 `/` 的行名
+# 一律返回 undefined ⇒ 客户端半边不会被登记、面板在浏览器里根本不出现（fly-smart 的 patch
+# 注释记着同一条实测）。所以本包的裸名 = 宿主平面的面板行，agent 平面的工具挪到包内子路径
+# `tools/index.js`，由 preset 按会话挂载 —— 两条纪律同时满足：
+#   ① 本 patch 里**没有** `inject: ['tools']` 的行（宿主不会在开机激活工具插件）；
+#   ② 面板这一行是裸名 ⇒ 它的客户端半边登记得上。
+- insert:
+    - id: fly-engagement-panel
+      name: dsh-plugin-fly-engagement
