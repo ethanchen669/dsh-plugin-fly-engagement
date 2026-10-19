@@ -32,32 +32,10 @@ const PANEL_CSS = `/*
  * 实现时一律 'var(--dsw-alias-*, 兜底)' —— 真宿主会给出 token，兜底只在 mock/降级时生效。
  * 面板框（rail 8px / desk 12px / 3px 亮缘）照 '.fly-panel' 的结构，不再发明第二套。
  */
-:root {
-  --dsw-alias-bg-base: #070b12;
-  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.045);
-  --dsw-alias-bg-layer-2: rgba(255, 255, 255, 0.07);
-  --dsw-alias-fg-primary: #e8eef8;
-  --dsw-alias-fg-secondary: #9fb0c6;
-  --dsw-alias-fg-muted: #6b7d95;
-  --dsw-alias-border-l1: rgba(255, 255, 255, 0.10);
-  --fly-accent: #f0a55a;
-  --fly-accent-dim: rgba(240, 165, 90, 0.16);
-  --fly-critical: #ff5f6d;
-  --fly-high: #ff9b52;
-  --fly-medium: #e8c54a;
-  --fly-low: #6fc2ff;
-  --fly-info: #8fa3bd;
-}
-
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  padding: var(--fly-desk, 12px);
-  background: #05080d;
-  font: 13px/1.5 -apple-system, "SF Pro Text", "PingFang SC", system-ui, sans-serif;
-  color: var(--dsw-alias-fg-primary);
-}
-
+/* 2026-10-19：这三条**只属于独立效果图页**（body padding / 全页重置 / token 兜底），
+   不能注入宿主 —— 它们把宿主页面挤了 12px 并刷成不透明底，症状是"侧栏卡片与 App 边缘
+   之间多出一条黑边、发光顶不到边"（用户判词）。宿主里每一条声明都自带 var() 兜底，
+   不需要这里的 :root。留注释备查，mock 页仍按原样式表渲染。 */
 /* ── 面板框：照 .fly-panel 的结构（rail 8px / 3px 亮缘 / 底部关系型亮缘） ── */
 .fly-eg-panel {
   --fly-rail: 8px;
