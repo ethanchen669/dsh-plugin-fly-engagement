@@ -35,7 +35,7 @@ const patchRaw = readFileSync(join(ROOT, 'cordis.patch.yml'), 'utf8')
 // 去注释再判：patch 的**注释里**就写着「不许有 inject: ['tools'] 的行」，直接 grep 会把自己判红
 const patch = patchRaw.split('\n').filter(line => !line.trimStart().startsWith('#')).join('\n')
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'))
-check('bundle patch 用裸包名挂面板行', patch.includes("name: @dsh-fly/dsh-plugin-fly-engagement"))
+check('bundle patch 用裸包名挂面板行', patch.includes("name: '@dsh-fly/dsh-plugin-fly-engagement'"))
 check('bundle patch 里没有 inject: [\'tools\'] 的行', !/inject:\s*\[[^\]]*tools/u.test(patch))
 check('dsh.client 声明了 sidebar-right 注入', (pkg.dsh?.client?.inject ?? []).includes('@deepseek-ai/dsh-client-ui-sidebar-right'))
 check('声明了 dsh.bundle.patch', pkg.dsh?.bundle?.patch === './cordis.patch.yml')
